@@ -11,7 +11,15 @@ app.use(routeStaticFilesFrom([
   `${Deno.cwd()}/client/public`,
 ]));
 
+
+
+
 if (import.meta.main) {
   console.log("Server listening on port http://localhost:8000");
   await app.listen({ port: 8000 });
 }
+
+
+
+app.use(router.routes());
+app.use(router.allowedMethods());

@@ -1,8 +1,11 @@
+body {
+  background-color: #020712;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
 }
 
 .logo {
@@ -33,8 +36,13 @@
   }
 }
 
-.card {
-  padding: 2em;
+tr {
+  border-bottom: 1px #550000 solid;
+}
+
+td {
+  padding: 2px;
+  padding-left: 15px;
 }
 
 .read-the-docs {
