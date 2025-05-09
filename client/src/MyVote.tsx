@@ -25,6 +25,14 @@ export default function MyVote() {
     );
   };
 
+  const voteUp = (countryCode: string) => {
+    postUpVote(countryCode).then(() => fetchVotes(setLineup, setMyRanking));
+  };
+
+  const voteDown = (countryCode: string) => {
+    postDownVote(countryCode).then(() => fetchVotes(setLineup, setMyRanking));
+  };
+
   useEffect(() => {
     const newOptions = optionsArray.filter((v) =>
       myRanking.find((myr) => myr.rank === v) === undefined
@@ -36,31 +44,40 @@ export default function MyVote() {
     <div>
       {myRanking.length > 0 && (
         <div>
-          <h1>Min rangering 🥁</h1>
+          <h2>Din rangering 📈</h2>
           <table>
-            <thead>
-              <tr>
-                <td>
-                </td>
-                <td>
-                  <i>Land</i>
-                </td>
-                <td>
-                  <i>Sang</i>
-                </td>
-                <td>
-                  <i>Plassering</i>
-                </td>
-              </tr>
-            </thead>
             <tbody>
               {myRanking.map((rank) => {
                 return (
                   <tr key={rank.countryCode}>
+                    <td>
+                      <div className=" pl-3 font-bold  text-lg">
+                        {rank.rank}
+                      </div>
+                    </td>
                     <td>{getCountryFlagEmoji(rank.countryCode)}</td>
-                    <td>{rank.countryCode}</td>
+                    <td>{rank.country}</td>
                     <td>{rank.song}</td>
-                    <td>{rank.rank}</td>
+                    <td className="flex flex-row space-x-1">
+                      {rank.rank < 37 &&
+                        (
+                          <div
+                            className="rounded-md bg-gray-800 pl-1 pr-1 cursor-pointer"
+                            onClick={() => voteDown(rank.countryCode)}
+                          >
+                            ↓
+                          </div>
+                        )}
+                      {rank.rank > 1 &&
+                        (
+                          <div
+                            className=" rounded-md bg-gray-800 pl-1 pr-1 cursor-pointer"
+                            onClick={() => voteUp(rank.countryCode)}
+                          >
+                            ↑
+                          </div>
+                        )}
+                    </td>
                     <td>
                     </td>
                   </tr>
@@ -73,26 +90,11 @@ export default function MyVote() {
 
       {optionsArray.length > 0 && (
         <div>
-          <h1>Sanger du ikke har rangert 🫣</h1>
+          <h2>Sanger du ikke har rangert 🫣</h2>
 
           {lineup.length > 0 &&
             (
               <table>
-                <thead>
-                  <tr>
-                    <td>
-                    </td>
-                    <td>
-                      <i>Land</i>
-                    </td>
-                    <td>
-                      <i>Sang</i>
-                    </td>
-                    <td>
-                      <i>Plassering</i>
-                    </td>
-                  </tr>
-                </thead>
                 <tbody>
                   {lineup.map((country) => {
                     return (
@@ -137,6 +139,7 @@ interface Ranking {
   countryCode: string;
   rank: number;
   song: string;
+  country: string;
 }
 
 interface Country {
@@ -187,5 +190,25 @@ function fetchVotes(
       setLineup(r.lineup);
       setMyRankings(r.myranking);
     }
+  });
+}
+
+function postUpVote(countryCode: string): Promise<void> {
+  console.log("up with", countryCode);
+  return fetch(
+    `${apiUrl}/upvote?c=${countryCode}`,
+    { method: "POST", credentials: "include" },
+  ).then((r) => {
+    if (!r.ok) console.log("upvote failed");
+  });
+}
+
+function postDownVote(countryCode: string) {
+  console.log("down with", countryCode);
+  return fetch(
+    `${apiUrl}/downvote?c=${countryCode}`,
+    { method: "POST", credentials: "include" },
+  ).then((r) => {
+    if (!r.ok) console.log("upvote failed");
   });
 }
