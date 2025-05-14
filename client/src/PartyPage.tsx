@@ -6,9 +6,9 @@ import EscResults from "./EscResults.tsx";
 export default function PartyPage() {
   return (
     <div className="flex flex-col space-y-12">
-      <EscResults />
       <PartySummary />
       <MyVote />
+      <EscResults />
     </div>
   );
 }

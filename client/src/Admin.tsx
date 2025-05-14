@@ -8,7 +8,7 @@ export default function AdminPage() {
   const [lineup, setLineup] = useState<Country[]>([]);
   const [score, setScore] = useState<EscScore[]>([]);
   const refresh = () => {
-    fetchVotes().then((r) => setLineup(r.lineup));
+    fetchLineup().then((r) => setLineup(r.lineup));
     fetchScores().then((s) => setScore(s.scores));
   };
 
@@ -71,4 +71,25 @@ async function postDelta(countrycode: string, delta: number): Promise<void> {
       },
     },
   );
+}
+
+
+export function fetchLineup(): Promise<LineUp> {
+  return fetch(
+    `${apiUrl}/lineup`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  ).then((e) => {
+    return e.json() as Promise<LineUp>;
+  });
+}
+
+
+interface LineUp {
+  lineup: Country[];
 }
