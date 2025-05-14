@@ -7,7 +7,7 @@ import AdminPage from "./Admin.tsx";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/party">
       <Routes>
         <Route path="/" element={<Welcome />} />
         <Route path="/party/:code" element={<PartyPage />} />
