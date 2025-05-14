@@ -65,7 +65,7 @@ export default function PartySummary() {
       {parties && parties.partyScores.length == 0 &&
         (
           <div>
-            <h2>Her er de andre på festen din:</h2>
+            <h2>Deltagere på festen:</h2>
             <ul className="pl-4">
               {parties.participants.map((p) => (
                 <div key={p.name} className="twirl flex flex-row space-x-4">
