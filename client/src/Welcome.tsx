@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 
 import "./App.css";
 import JoinParty from "./JoinParty.tsx";
+
+export const apiUrl = import.meta.env.API_URL || "https://bytecode.no/esc";
 
 function Welcome() {
   gsap.registerPlugin(SplitText);
@@ -25,10 +26,7 @@ function Welcome() {
       },
     });
   });
-
-  const createParty = () => {
-    console.log("create");
-  };
+ 
   return (
     <div className="flex flex-col items-center">
       <img src="/logo.png" className="h-72 " alt="Party logo" />
@@ -40,10 +38,7 @@ function Welcome() {
       <div className="flex flex-col w-full">
         <JoinParty />
 
-        <div className="w-full mt-24 p-8  shadow-amber-700 shadow  rounded-2xl">
-          ... or
-          <button onClick={(e) => createParty()}>Create new party</button>
-        </div>
+     
       </div>
     </div>
   );

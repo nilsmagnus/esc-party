@@ -3,7 +3,7 @@
     "dev": "deno run -A --node-modules-dir=auto npm:vite",
     "build": "deno run -A --node-modules-dir=auto npm:vite build",
     "server:start": "deno run -A --node-modules-dir --watch ./server/main.ts",
-    "serve": "deno task build && deno task server:start"
+    "serve": "deno task build && deno task server:start",
   },
   "imports": {
     "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.4",
@@ -14,6 +14,7 @@
     "@types/node": "npm:@types/node@^22.15.12",
     "@types/react": "npm:@types/react@^19.1.2",
     "@vitejs/plugin-react": "npm:@vitejs/plugin-react@^4.4.1",
+    "canvas-confetti": "npm:canvas-confetti@^1.9.3",
     "gsap": "npm:gsap@^3.13.0",
     "react": "npm:react@^19.1.0",
     "react-dom": "npm:react-dom@^19.1.0",

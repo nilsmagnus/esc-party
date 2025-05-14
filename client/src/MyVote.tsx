@@ -6,31 +6,92 @@ import {
   useState,
 } from "react";
 
+import confetti from "canvas-confetti";
+
+import { gsap } from "gsap";
+import { apiUrl } from "./Welcome.tsx";
+
 export default function MyVote() {
   const [myRanking, setMyRanking] = useState<Ranking[]>([]);
   const [lineup, setLineup] = useState<Country[]>([]);
+  const [isVotingOpen, setIsVotingOpen] = useState(true);
   const [optionsArray, setOptionsArray] = useState(
     Array.from({ length: 37 }, (_, index) => index + 1),
   );
 
   useEffect(() => {
-    fetchVotes(setLineup, setMyRanking);
+    fetchVotes().then((r) => {
+      setMyRanking(r.myranking);
+      setLineup(r.lineup);
+      setIsVotingOpen(r.isVotingOpen);
+    });
   }, []);
+
+  function animateUp(countryCode: string) {
+    confetti({
+      shapes: ["star"],
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+    gsap.to(`.${countryCode}`, {
+      stagger: -0.4,
+      x: 150,
+      y: 20,
+      rotation: -720,
+      duration: 0.5,
+      repeat: 1,
+      yoyo: true,
+      scale: 8.0,
+    });
+  }
+
+  function animateDown(countryCode: string) {
+    gsap.to(`.${countryCode}`, {
+      rotation: -720,
+      duration: 0.5,
+      scale: 0.3,
+      yoyo: true,
+      repeat: 1,
+    });
+  }
 
   const addVote = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     const selectedObject = JSON.parse(selectedValue);
-    postRank(selectedObject.country, selectedObject.rank).then(() =>
-      fetchVotes(setLineup, setMyRanking)
-    );
+    postRank(selectedObject.country, selectedObject.rank).then(() => {
+      fetchVotes().then((r) => {
+        setMyRanking(r.myranking);
+        setLineup(r.lineup);
+        setIsVotingOpen(r.isVotingOpen);
+      });
+
+      setTimeout(() => {
+        animateUp(selectedObject.country);
+      }, 100);
+    });
   };
 
   const voteUp = (countryCode: string) => {
-    postUpVote(countryCode).then(() => fetchVotes(setLineup, setMyRanking));
+    postUpVote(countryCode)
+      .then(() => fetchVotes())
+      .then((r) => {
+        setMyRanking(r.myranking);
+        setLineup(r.lineup);
+        setIsVotingOpen(r.isVotingOpen);
+      })
+      .then(() => animateUp(countryCode));
   };
 
   const voteDown = (countryCode: string) => {
-    postDownVote(countryCode).then(() => fetchVotes(setLineup, setMyRanking));
+    animateDown(countryCode);
+    postDownVote(countryCode).then(() =>
+      fetchVotes().then((r) => {
+        setMyRanking(r.myranking);
+        setLineup(r.lineup);
+        setIsVotingOpen(r.isVotingOpen);
+      })
+    );
   };
 
   useEffect(() => {
@@ -44,22 +105,26 @@ export default function MyVote() {
     <div>
       {myRanking.length > 0 && (
         <div>
-          <h2>Din rangering 📈</h2>
+          <h2>Dine stemmer 📈</h2>
           <table>
             <tbody>
               {myRanking.map((rank) => {
                 return (
                   <tr key={rank.countryCode}>
                     <td>
-                      <div className=" pl-3 font-bold  text-lg">
-                        {rank.rank}
+                      <div className="pl-3 font-bold  text-lg">
+                        <div className={rank.countryCode}>{rank.rank}</div>
                       </div>
                     </td>
-                    <td>{getCountryFlagEmoji(rank.countryCode)}</td>
+                    <td>
+                      <div className={rank.countryCode}>
+                        {getCountryFlagEmoji(rank.countryCode)}
+                      </div>
+                    </td>
                     <td>{rank.country}</td>
                     <td>{rank.song}</td>
                     <td className="flex flex-row space-x-1">
-                      {rank.rank < 37 &&
+                      {isVotingOpen && rank.rank < 37 &&
                         (
                           <div
                             className="rounded-md bg-gray-800 pl-1 pr-1 cursor-pointer"
@@ -68,7 +133,7 @@ export default function MyVote() {
                             ↓
                           </div>
                         )}
-                      {rank.rank > 1 &&
+                      {isVotingOpen && rank.rank > 1 &&
                         (
                           <div
                             className=" rounded-md bg-gray-800 pl-1 pr-1 cursor-pointer"
@@ -103,20 +168,23 @@ export default function MyVote() {
                         <td>{country.country}</td>
                         <td>{country.song}</td>
                         <td>
-                          <select value="" onChange={addVote}>
-                            <option>-</option>
-                            {optionsArray.map((rank) => (
-                              <option
-                                key={rank}
-                                value={JSON.stringify({
-                                  "rank": rank,
-                                  "country": country.code,
-                                })}
-                              >
-                                {rank}
-                              </option>
-                            ))}
-                          </select>
+                          {isVotingOpen &&
+                            (
+                              <select value="" onChange={addVote}>
+                                <option>-</option>
+                                {optionsArray.map((rank) => (
+                                  <option
+                                    key={rank}
+                                    value={JSON.stringify({
+                                      "rank": rank,
+                                      "country": country.code,
+                                    })}
+                                  >
+                                    {rank}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
                         </td>
                       </tr>
                     );
@@ -131,6 +199,7 @@ export default function MyVote() {
 }
 
 interface MyVotes {
+  isVotingOpen: boolean;
   lineup: Country[];
   myranking: Ranking[];
 }
@@ -142,13 +211,13 @@ interface Ranking {
   country: string;
 }
 
-interface Country {
+export interface Country {
   code: string;
   country: string;
   song: string;
 }
 
-const getCountryFlagEmoji = (countryCode: string) => {
+export const getCountryFlagEmoji = (countryCode: string) => {
   const codePoints = countryCode
     .toUpperCase()
     .split("")
@@ -157,7 +226,6 @@ const getCountryFlagEmoji = (countryCode: string) => {
   return String.fromCodePoint(...codePoints);
 };
 
-const apiUrl = import.meta.env.API_URL || "http://localhost:8089";
 
 function postRank(countryCode: string, rank: number): Promise<void> {
   return fetch(`${apiUrl}/myvote?rank=${rank}&country=${countryCode}`, {
@@ -168,11 +236,8 @@ function postRank(countryCode: string, rank: number): Promise<void> {
   });
 }
 
-function fetchVotes(
-  setLineup: Dispatch<SetStateAction<Country[]>>,
-  setMyRankings: Dispatch<SetStateAction<Ranking[]>>,
-) {
-  fetch(
+export function fetchVotes(): Promise<MyVotes> {
+  return fetch(
     `${apiUrl}/myvote`,
     {
       method: "GET",
@@ -182,14 +247,7 @@ function fetchVotes(
       },
     },
   ).then((e) => {
-    if (e.ok) {
-      return e.json() as Promise<MyVotes>;
-    }
-  }).then((r) => {
-    if (r) {
-      setLineup(r.lineup);
-      setMyRankings(r.myranking);
-    }
+    return e.json() as Promise<MyVotes>;
   });
 }
 

@@ -1,17 +1,20 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import process from "node:process";
+import { useSearchParams } from "react-router-dom";
+import confetti from "canvas-confetti";
+import { apiUrl } from "./Welcome.tsx";
 
 export default function JoinParty() {
-  const apiUrl = import.meta.env.API_URL || "http://localhost:8089";
-
-  const container = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [searchParams] = useSearchParams();
+  const urlCode = searchParams.get("code");
+
   const [error, setError] = useState<string | null>(null);
 
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState<string>(urlCode ?? "");
   const [nick, setNick] = useState("");
 
   const { contextSafe } = useGSAP();
@@ -33,7 +36,7 @@ export default function JoinParty() {
         `${apiUrl}/party/join/${code}?nick=${nick}`,
         {
           method: "GET", // or POST, PUT, etc. depending on your API requirements
-          credentials: 'include',
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -42,7 +45,15 @@ export default function JoinParty() {
 
       if (response.status === 200) {
         // If response is successful, redirect using window.location
-        window.location.href = `/party/${code}`;
+        confetti({
+          shapes: ["star"],
+          particleCount: 100,
+          spread: 120,
+          origin: { y: 1 },
+        });
+        setTimeout(() => {
+          window.location.href = `/party/${code}`;
+        }, 200);
       } else {
         // Handle other status codes
         setError(`Failed to join party. Status: ${response.status}`);
@@ -63,6 +74,7 @@ export default function JoinParty() {
         placeholder="party-code-123-abc"
         className="border-1 rounded p-2 w-3/4"
         onInput={(e) => setCode(e.target?.value ?? "")}
+        value={code}
       />
       <input
         type="text"
@@ -71,7 +83,6 @@ export default function JoinParty() {
         onInput={(e) => setNick(e.target?.value ?? "")}
       />
       <button
-        ref={container}
         onClick={joinParty}
         type="button"
         className="good shadow shadow-emerald-100 mt-4"
