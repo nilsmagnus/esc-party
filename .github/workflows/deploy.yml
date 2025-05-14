@@ -39,6 +39,6 @@ jobs:
         with:
           project: "eurovision-party"
           entrypoint: "https://deno.land/std@0.217.0/http/file_server.ts"
-          root: "client"
+          root: "client/dist"
           
           
