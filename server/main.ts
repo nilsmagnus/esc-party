@@ -32,6 +32,30 @@ app.use(async (ctx) => {
   }
 });
 
+app.use(async (ctx, next) => {
+  try {
+    const path = ctx.request.url.pathname;
+
+    // Check if the request is for a CSS file
+    if (path.endsWith('.css')) {
+      await ctx.send({
+        root: `${Deno.cwd()}/static`, // Adjust this path to your project structure
+        path: path,
+        // Set the correct MIME type for CSS files
+        contentTypes: {
+          '.css': 'text/css',
+        },
+      });
+      return; // Stop processing if file was sent
+    }
+
+    // Continue to next middleware if not a CSS file
+    await next();
+  } catch {
+    await next();
+  }
+});
+
 if (import.meta.main) {
   console.log("Server listening on port http://localhost:8000");
   await app.listen({ port: 8000 });
