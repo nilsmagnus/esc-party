@@ -5,7 +5,7 @@ import { SplitText } from "gsap/SplitText";
 import "./App.css";
 import JoinParty from "./JoinParty.tsx";
 
-export const apiUrl = import.meta.env.API_URL || "http://localhost:8089";
+export const apiUrl = import.meta.env.API_URL || "https://bytecode.no/esc";
 
 function Welcome() {
   gsap.registerPlugin(SplitText);
