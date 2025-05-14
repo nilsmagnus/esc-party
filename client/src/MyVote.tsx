@@ -226,9 +226,10 @@ export const getCountryFlagEmoji = (countryCode: string) => {
   return String.fromCodePoint(...codePoints);
 };
 
-
 function postRank(countryCode: string, rank: number): Promise<void> {
-  return fetch(`${apiUrl}/myvote?rank=${rank}&country=${countryCode}`, {
+  const userid = localStorage.getItem("userid");
+  const party = localStorage.getItem("party");
+  return fetch(`${apiUrl}/myvote?rank=${rank}&country=${countryCode}&userid=${userid}&party=${party}`, {
     method: "POST",
     credentials: "include",
   }).then((r) => {
@@ -237,8 +238,10 @@ function postRank(countryCode: string, rank: number): Promise<void> {
 }
 
 export function fetchVotes(): Promise<MyVotes> {
+  const userid = localStorage.getItem("userid");
+  const party = localStorage.getItem("party");
   return fetch(
-    `${apiUrl}/myvote`,
+    `${apiUrl}/myvote?userid=${userid}&party=${party}`,
     {
       method: "GET",
       credentials: "include",
@@ -252,9 +255,12 @@ export function fetchVotes(): Promise<MyVotes> {
 }
 
 function postUpVote(countryCode: string): Promise<void> {
+  const userid = localStorage.getItem("userid");
+  const party = localStorage.getItem("party");
+
   console.log("up with", countryCode);
   return fetch(
-    `${apiUrl}/upvote?c=${countryCode}`,
+    `${apiUrl}/upvote?c=${countryCode}&userid=${userid}&party=${party}`,
     { method: "POST", credentials: "include" },
   ).then((r) => {
     if (!r.ok) console.log("upvote failed");
@@ -263,8 +269,11 @@ function postUpVote(countryCode: string): Promise<void> {
 
 function postDownVote(countryCode: string) {
   console.log("down with", countryCode);
+  const userid = localStorage.getItem("userid");
+  const party = localStorage.getItem("party");
+
   return fetch(
-    `${apiUrl}/downvote?c=${countryCode}`,
+    `${apiUrl}/downvote?c=${countryCode}&userid=${userid}&party=${party}`,
     { method: "POST", credentials: "include" },
   ).then((r) => {
     if (!r.ok) console.log("upvote failed");

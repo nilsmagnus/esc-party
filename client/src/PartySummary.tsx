@@ -65,7 +65,7 @@ export default function PartySummary() {
       {parties && parties.partyScores.length == 0 &&
         (
           <div>
-            <h2>Deltagere på festen:</h2>
+            <h2>Deltagere på festen</h2>
             <ul className="pl-4">
               {parties.participants.map((p) => (
                 <div key={p.name} className="twirl flex flex-row space-x-4">
@@ -101,16 +101,6 @@ export interface EscScore {
   country: string;
   countryCode: string;
 }
-
-function getCookie(name: string): string | undefined {
-  console.log("cookies")
-  console.log(document.cookie)
-  const cookieValue = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith(name + "="));
-  return cookieValue ? cookieValue.split("=")[1] : undefined;
-}
-
 
 function fetchParties(
   party: string,

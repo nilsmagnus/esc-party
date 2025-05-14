@@ -44,6 +44,7 @@ export default function JoinParty() {
       );
 
       if (response.status === 200) {
+
         // If response is successful, redirect using window.location
         confetti({
           shapes: ["star"],
@@ -51,6 +52,9 @@ export default function JoinParty() {
           spread: 120,
           origin: { y: 1 },
         });
+        const participant = await response.json() as JoinResponse
+        localStorage.setItem("party", code);
+        localStorage.setItem("userid", participant.participant.userid)
         setTimeout(() => {
           window.location.href = `/party/${code}`;
         }, 200);
@@ -66,6 +70,10 @@ export default function JoinParty() {
       tween.reverse();
     }
   });
+
+  interface JoinResponse{
+    participant: {userid: string}
+  }
 
   return (
     <div className=" flex flex-col items-center p-6 mt-8 shadow-emerald-100 shadow rounded-2xl">
