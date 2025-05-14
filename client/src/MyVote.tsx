@@ -112,7 +112,7 @@ export default function MyVote() {
                 return (
                   <tr key={rank.countryCode}>
                     <td>
-                      <div className="pl-3 font-bold  text-lg">
+                      <div className="">
                         <div className={rank.countryCode}>{rank.rank}</div>
                       </div>
                     </td>
@@ -127,7 +127,7 @@ export default function MyVote() {
                       {isVotingOpen && rank.rank < 37 &&
                         (
                           <div
-                            className="rounded-md bg-gray-800 pl-1 pr-1 cursor-pointer"
+                            className="rounded-md bg-gray-400 px-2 cursor-pointer"
                             onClick={() => voteDown(rank.countryCode)}
                           >
                             ↓
@@ -136,7 +136,7 @@ export default function MyVote() {
                       {isVotingOpen && rank.rank > 1 &&
                         (
                           <div
-                            className=" rounded-md bg-gray-800 pl-1 pr-1 cursor-pointer"
+                            className=" rounded-md bg-gray-400 px-2 cursor-pointer"
                             onClick={() => voteUp(rank.countryCode)}
                           >
                             ↑
@@ -170,7 +170,7 @@ export default function MyVote() {
                         <td>
                           {isVotingOpen &&
                             (
-                              <select value="" onChange={addVote}>
+                              <select className="bg-gray-400 rounded-md p-1" value="" onChange={addVote}>
                                 <option>-</option>
                                 {optionsArray.map((rank) => (
                                   <option
