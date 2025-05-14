@@ -1,14 +1,19 @@
 import {  useEffect, useState } from "react";
+import { useParams } from 'react-router-dom';
 
 import { gsap } from "gsap";
 import { apiUrl } from "./Welcome.tsx";
 
 export default function PartySummary() {
   const [parties, setParties] = useState<Parties | null>(null);
-  const party = getCookie("party");
+
+  const { code } = useParams<{ code: string }>();
+  console.log("party", code)
 
   const refreshParties = (party: string) => {
+    console.log("refresh parties")
     fetchParties(party).then((p) => setParties(p)).then(() =>{
+    console.log("refreshed parties")
 
       setTimeout(() => {
         gsap.to(".rank", {
@@ -30,8 +35,8 @@ export default function PartySummary() {
   };
 
   useEffect(() => {
-    if (party != undefined) {
-      refreshParties(party);
+    if (code != undefined) {
+      refreshParties(code);
     }
   }, []);
 
@@ -60,12 +65,12 @@ export default function PartySummary() {
       {parties && parties.partyScores.length == 0 &&
         (
           <div>
-            <h3>Her er de andre på festen din:</h3>
+            <h2>Her er de andre på festen din:</h2>
             <ul className="pl-4">
               {parties.participants.map((p) => (
-                <div key={p.nick} className="twirl flex flex-row space-x-4">
+                <div key={p.name} className="twirl flex flex-row space-x-4">
                   <h2>{getRandomPartyEmojis()}</h2>
-                  <div>{p.nick}</div>
+                  <div>{p.name}</div>
                 </div>
               ))}
             </ul>
@@ -82,7 +87,7 @@ interface Parties {
 }
 
 interface Participant {
-  nick: string;
+  name: string;
 }
 
 interface RankedParticipant {
@@ -98,6 +103,8 @@ export interface EscScore {
 }
 
 function getCookie(name: string): string | undefined {
+  console.log("cookies")
+  console.log(document.cookie)
   const cookieValue = document.cookie
     .split("; ")
     .find((row) => row.startsWith(name + "="));
