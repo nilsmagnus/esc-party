@@ -122,7 +122,7 @@ export default function MyVote() {
                     <td>{rank.country}</td>
                     <td>{rank.song}</td>
                     <td className="flex flex-row space-x-1">
-                      {isVotingOpen && rank.rank < 37 &&
+                      {isVotingOpen && rank.rank < 26 &&
                         (
                           <div
                             className="rounded-md bg-gray-400 px-2 cursor-pointer"
