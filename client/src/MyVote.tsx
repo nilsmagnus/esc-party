@@ -1,7 +1,5 @@
 import {
   ChangeEvent,
-  Dispatch,
-  SetStateAction,
   useEffect,
   useState,
 } from "react";
@@ -153,47 +151,7 @@ export default function MyVote() {
         </div>
       )}
 
-      {optionsArray.length > 0 && (
-        <div>
-          <h2>Sanger du ikke har rangert 🫣</h2>
-
-          {lineup.length > 0 &&
-            (
-              <table>
-                <tbody>
-                  {lineup.map((country) => {
-                    return (
-                      <tr key={country.code}>
-                        <td>{getCountryFlagEmoji(country.code)}</td>
-                        <td>{country.country}</td>
-                        <td>{country.song}</td>
-                        <td>
-                          {isVotingOpen &&
-                            (
-                              <select className="bg-gray-400 rounded-md p-1" value="" onChange={addVote}>
-                                <option>-</option>
-                                {optionsArray.map((rank) => (
-                                  <option
-                                    key={rank}
-                                    value={JSON.stringify({
-                                      "rank": rank,
-                                      "country": country.code,
-                                    })}
-                                  >
-                                    {rank}
-                                  </option>
-                                ))}
-                              </select>
-                            )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-        </div>
-      )}
+      
     </div>
   );
 }
