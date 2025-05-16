@@ -11,9 +11,6 @@ function Welcome() {
   const party = localStorage.getItem("party");
   const user = localStorage.getItem("userid");
 
-  if(party != null && user != null ){
-    window.location.href = `/party/${party}`;
-  }
   gsap.registerPlugin(SplitText);
 
   useGSAP(() => {
@@ -40,7 +37,7 @@ function Welcome() {
       <h1 className="partysplit">
         🤩 Eurovision Party 🎉
       </h1>
-
+      
       <div className="flex flex-col w-full">
         <JoinParty />
       </div>
