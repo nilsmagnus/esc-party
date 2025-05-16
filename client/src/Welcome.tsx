@@ -8,6 +8,12 @@ import JoinParty from "./JoinParty.tsx";
 export const apiUrl = import.meta.env.API_URL || "https://bytecode.no/esc";
 
 function Welcome() {
+  const party = localStorage.getItem("party");
+  const user = localStorage.getItem("userid");
+
+  if(party != null && user != null ){
+    window.location.href = `/party/${party}`;
+  }
   gsap.registerPlugin(SplitText);
 
   useGSAP(() => {
@@ -15,10 +21,10 @@ function Welcome() {
     const chars = partyText.chars;
 
     gsap.from(chars, {
-      rotate:360,
-      ease:"power1.out",
+      rotate: 360,
+      ease: "power1.out",
       yoyo: true,
-      yoyoEase:"back.out",
+      yoyoEase: "back.out",
       repeat: -1,
       stagger: {
         amount: 0.5,
@@ -26,19 +32,17 @@ function Welcome() {
       },
     });
   });
- 
+
   return (
     <div className="flex flex-col items-center">
       <img src="/logo.png" className="h-72 " alt="Party logo" />
 
       <h1 className="partysplit">
-      🤩 Eurovision Party 🎉  
+        🤩 Eurovision Party 🎉
       </h1>
 
       <div className="flex flex-col w-full">
         <JoinParty />
-
-     
       </div>
     </div>
   );
