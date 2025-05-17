@@ -9,7 +9,7 @@ export default function PartyPage() {
     setTimeout(() => {
       location.reload();
       reload();
-    }, 60000);
+    }, 300000);
   }
   useEffect(()=>{
     reload();
